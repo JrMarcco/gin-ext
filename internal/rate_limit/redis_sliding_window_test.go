@@ -19,8 +19,8 @@ func initRedis() redis.Cmdable {
 	return redisClient
 }
 
-func TestRedisSlideWindowLimiter(t *testing.T) {
-	r := &RedisSlideWindowLimiter{
+func TestRedisSlidingWindowLimiter(t *testing.T) {
+	r := &RedisSlidingWindowLimiter{
 		Cmd:      initRedis(),
 		Interval: time.Second,
 		Rate:     1000,
@@ -53,8 +53,8 @@ func TestRedisSlideWindowLimiter(t *testing.T) {
 	t.Logf("total request count: %d, success count: %d, limited count: %d", totalReq, successCnt, limitedCnt)
 }
 
-func TestRedisSlideWindowLimiter_Limit(t *testing.T) {
-	r := &RedisSlideWindowLimiter{
+func TestRedisSlidingWindowLimiter_Limit(t *testing.T) {
+	r := &RedisSlidingWindowLimiter{
 		Cmd:      initRedis(),
 		Interval: time.Second,
 		Rate:     1,
