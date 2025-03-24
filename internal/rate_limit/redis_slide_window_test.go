@@ -11,6 +11,8 @@ import (
 
 func initRedis() redis.Cmdable {
 	redisClient := redis.NewClient(&redis.Options{
+		// develop on wsl, so use the ip of the wsl
+		// change it to the ip of the redis server when testing on the your local machine
 		Addr: "172.31.176.1:6379",
 	})
 
