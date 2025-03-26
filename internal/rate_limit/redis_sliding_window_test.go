@@ -11,9 +11,9 @@ import (
 
 func initRedis() redis.Cmdable {
 	redisClient := redis.NewClient(&redis.Options{
-		// develop on wsl, so use the ip of the wsl
 		// change it to the ip of the redis server when testing on the your local machine
-		Addr: "172.31.176.1:6379",
+		Addr:     "192.168.3.3:6379",
+		Password: "<passwd>",
 	})
 
 	return redisClient
@@ -26,15 +26,15 @@ func TestRedisSlidingWindowLimiter(t *testing.T) {
 		Rate:     1000,
 	}
 
-	totalReq := 1500
+	totalReq := 5000
 	var (
 		successCnt int
 		limitedCnt int
 	)
 
-	now := time.Now()
+	start := time.Now()
 	for range totalReq {
-		limited, err := r.Limit(context.Background(), "test_rate_limit_key")
+		limited, err := r.Limit(context.Background(), "test_total_rate_limit_key")
 		if err != nil {
 			t.Fatalf("failed to limit: %v", err)
 			return
@@ -47,9 +47,10 @@ func TestRedisSlidingWindowLimiter(t *testing.T) {
 		}
 	}
 
-	windowStart := now.Add(-time.Second)
-	t.Logf("window start at %v", windowStart.Format(time.StampMilli))
-	t.Logf("window end at %v", now.Format(time.StampMilli))
+	end := time.Now()
+	t.Logf("test start at %v", start.Format(time.StampMilli))
+	t.Logf("test end at %v", end.Format(time.StampMilli))
+
 	t.Logf("total request count: %d, success count: %d, limited count: %d", totalReq, successCnt, limitedCnt)
 }
 
