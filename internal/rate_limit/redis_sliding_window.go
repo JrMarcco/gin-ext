@@ -30,12 +30,16 @@ func NewRedisSlidingWindowLimiter(cmd redis.Cmdable, interval time.Duration, rat
 	}
 }
 
+// Limit checks if the request is limited.
+// If the request is limited, it returns true.
+// If the request is not limited, it returns false.
 func (r *RedisSlidingWindowLimiter) Limit(ctx context.Context, key string) (bool, error) {
 	uid, err := uuid.NewUUID()
 	if err != nil {
 		return false, fmt.Errorf("failed to generate uuid: %w", err)
 	}
 
+	// if the result is 0, the request is limited
 	result, err := r.Cmd.Eval(
 		ctx,
 		redisSlidingWindowLua,
